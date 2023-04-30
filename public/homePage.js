@@ -27,7 +27,7 @@ function getCourse() {
 }
 
 getCourse();
-setInterval(() => getCourse, 60000);
+setInterval(getCourse, 60000);
 
 
 const moneyManager = new MoneyManager();
@@ -36,10 +36,10 @@ moneyManager.addMoneyCallback = (data) => {
 	ApiConnector.addMoney(data, response => {
 		if (response.success) {
 			ProfileWidget.showProfile(response.data);
-			MoneyManager.setMessage(response.success, 'Пополнение')
+			moneyManager.setMessage(response.success, `Ваш счет был пополнен на ${data.amount} ${data.currency}.`)
 		}
 		else {
-			MoneyManager.setMessage(response.success, 'Ошибка')
+			moneyManager.setMessage(response.success, `Произошла ошибка: "${response.error}"`)
 		}
 	})
 }
@@ -48,10 +48,10 @@ moneyManager.conversionMoneyCallback = (data) => {
 	ApiConnector.convertMoney(data, response => {
 		if (response.success) {
 			ProfileWidget.showProfile(response.data);
-			moneyManager.setMessage(response.success, 'Конвертирование');
+			moneyManager.setMessage(response.success, `Конвертация из ${data.fromCurrency} в ${data.targetCurrency} прошла без ошибок.`);
 		}
 		else {
-			moneyManager.setMessage(response.success, 'Ошибка');
+			moneyManager.setMessage(response.success, `В процессе конвертации из ${data.fromCurrency} в ${data.targetCurrency} произошла ошибка: "${response.error}."`);
 		}
 	});
 }
@@ -61,10 +61,10 @@ moneyManager.sendMoneyCallback = (data) => {
 		if (response.success) {
 			ProfileWidget.showProfile(response.data);
 			moneyManager.setMessage(response.success,
-				`Успешно`);
+				`Средства переведены успешно.`);
 		} else {
 			moneyManager.setMessage(response.success,
-				`Ошибка`);
+				`При переводе средств произошла ошибка: "${response.error}."`);
 		}
 	});
 };
@@ -90,10 +90,10 @@ favoritesWidget.addUserCallback = (data) => {
 			favoritesWidget.clearTable();
 			favoritesWidget.fillTable(response.data);
 			moneyManager.updateUsersList(data);
-			favoritesWidget.setMessage(response.success, 'Пользователь добавлен');
+			favoritesWidget.setMessage(response.success, `Пользователь ${data.name} с ID ${data.id} успешно добавлен в избранное.`);
 		}
 		else {
-			favoritesWidget.setMessage(response.success, 'Произошла ошибка');
+			favoritesWidget.setMessage(response.success, `Попытка добавить пользователя в избранное завершилась ошибкой: ${response.error}.`);
 		}
 	});
 }
@@ -106,7 +106,7 @@ favoritesWidget.removeUserCallback = (data) => {
 				`Пользователь с ID ${data} был успешно удален из избранного.`);
 		} else {
 			favoritesWidget.setMessage(response.success,
-				`Ошибка`);
+				`Попытка удалить пользователя из избранного завершилась ошибкой: ${response.error}.`);
 		}
 	});
 };
